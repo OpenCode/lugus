@@ -3,7 +3,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/lugus.svg)](https://pypi.org/project/lugus)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lugus.svg)](https://pypi.org/project/lugus)
 
-![main page screenshot](readme/header.png)
+![readme header](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/header.png)
 
 -----
 
@@ -23,7 +23,7 @@ pip install lugus
 
 ### Main Screen
 
-![main page screenshot](readme/home.png)
+![main page screenshot](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/home.png)
 
 ## Roadmap
 
