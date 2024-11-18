@@ -233,9 +233,9 @@ class Feeds(Vertical):
             group = groups[group_name]
             name = data["name"]
             if show_counter:
-                count = self.orm.count("article", f"feed_id = {id_feed}")
+                count = self.orm.count("article", f"feed_id = {id_feed} AND read = 0")
                 if count:
-                    name = f"{name} ({count})"
+                    name = f"[b]{name} ({count})"
             group.add_leaf(
                 name,
                 data={
@@ -332,6 +332,7 @@ class Reader(Vertical):
             raw_data = article["raw_data"]
             raw_data = json.loads(raw_data)
             if self.config.get("article_read_auto_opening"):
+                # Set the acrticle as read in the database
                 self.orm.update("article", article["id"], [("read", 1)])
         if not self.show_raw:
             yield Markdown(content, id="body")
@@ -464,6 +465,8 @@ class LugusApp(App):
 
     def on_list_view_selected(self, event: ListView.Selected):
         self.query_one("#reader").id_article = event.item.id
+        # Trigger recompose of the feedbar to show the counters updated
+        self.query_one("#sidebar").recomposes += 1
 
     def on_tree_node_selected(self, event: Tree.NodeSelected):
         self.query_one("#articles").feed = event.node
