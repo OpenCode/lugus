@@ -5,12 +5,12 @@ import json
 import webbrowser
 from os import makedirs
 from pathlib import Path
-from textual import on
+from textual import on, work
 import textual
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Header, Footer, ListItem, ListView, LoadingIndicator, Rule, Select, Tree, Markdown, \
-    Static, Button, Label, Input, Pretty, Switch
+from textual.widgets import Header, Footer, ListItem, ListView, Rule, Select, Tree, Markdown, Static, Button, \
+    Label, Input, Pretty, Switch
 from textual.reactive import reactive
 
 
@@ -23,7 +23,7 @@ class ORM():
     connection = None
 
     def __init__(self) -> None:
-        self.connection = sqlite3.connect(self.db)
+        self.connection = sqlite3.connect(self.db, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
 
     def insert(self, table, fields, values):
@@ -153,12 +153,6 @@ class Feedform(Vertical):
         yield Input(id="feed_node")
         yield Button("+ Add", variant="primary", id="add_feed_button")
         yield Button("< Back", id="back_feed_button")
-
-
-class LoadingForm(Vertical):
-
-    def compose(self) -> ComposeResult:
-        yield LoadingIndicator()
 
 
 class ConfigurationForm(Vertical):
@@ -312,6 +306,11 @@ class ArticlesArea(Vertical):
             id="articles"
         )
 
+    @on(Select.Changed)
+    def select_changed(self, event: Select.Changed) -> None:
+        if event.select.id == "filter_articles_type":
+            self.query_one("#articles").filter_articles_type = event.value
+
 
 class Reader(Vertical):
 
@@ -378,12 +377,19 @@ class LugusApp(App):
             yield Feedform(id="feed_form")
         elif self.status == "configuration":
             yield ConfigurationForm(id="configuration_form")
-        elif self.status == "sync":
-            yield LoadingForm(id="loading_form")
 
-    def _synchronize_feeds(self):
+    @work(exclusive=True, thread=True)
+    def _synchronize_feeds(self, update_interface_element=None):
+        if update_interface_element:
+            update_interface_element.disabled = True
+            update_interface_element.label = "0/0 Feeds"
         feeds = self.orm.search("feed", ["id", "url"])
-        for feed in feeds:
+        if update_interface_element:
+            total_feeds = len(feeds)
+            update_interface_element.label = f"0/{total_feeds} Feeds"
+        for actual, feed in enumerate(feeds, start=1):
+            if update_interface_element:
+                update_interface_element.label = f"{actual}/{total_feeds} Feeds"
             feed_data = feedparser.parse(feed["url"])
             for article in feed_data.entries:
                 if article.get("content"): 
@@ -415,14 +421,15 @@ class LugusApp(App):
                         feed["id"],
                     ),
                 )
+        if update_interface_element:
+            update_interface_element.disabled = False
+            update_interface_element.label = "Sync"
+            self.notify("Feeds synchronized!")
         return
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    async def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "sync":
-            self.status = "sync"
-            self._synchronize_feeds()
-            self.notify("Feeds synchronized!")
-            self.status = "reading"
+            self._synchronize_feeds(update_interface_element=event.button)
         elif event.button.id == "add_new":
             self.status = "adding_feed"
         elif event.button.id == "back_feed_button":
@@ -457,11 +464,6 @@ class LugusApp(App):
 
     def on_list_view_selected(self, event: ListView.Selected):
         self.query_one("#reader").id_article = event.item.id
-
-    @on(Select.Changed)
-    def select_changed(self, event: Select.Changed) -> None:
-        if event.select.id == "filter_articles_type":
-            self.query_one("#articles").filter_articles_type = event.value
 
     def on_tree_node_selected(self, event: Tree.NodeSelected):
         self.query_one("#articles").feed = event.node
