@@ -1,13 +1,16 @@
-# lugus
+# LUGUS: Your terminal feeds reader
 
 [![PyPI - Version](https://img.shields.io/pypi/v/lugus.svg)](https://pypi.org/project/lugus)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lugus.svg)](https://pypi.org/project/lugus)
+
+![main page screenshot](readme/header.png)
 
 -----
 
 ## Table of Contents
 
 - [Installation](#installation)
+- [Roadmap](#roadmap)
 - [License](#license)
 
 ## Installation
@@ -16,6 +19,25 @@
 pip install lugus
 ```
 
+## Screenshot
+
+### Main Screen
+
+![main page screenshot](readme/home.png)
+
+## Roadmap
+
+- [ ] Import existing OPML files
+- [ ] Export feeds as OPML file
+- [ ] Set article as unread
+- [ ] Set a feed as read
+- [ ] Set an article as favorite
+- [ ] Tags system for articles
+- [ ] Add notes on articles
+- [ ] Feeds auto-sync
+- [ ] Edit existing feeds
+- [ ] Search articles by name/content
+ 
 ## License
 
-`lugus` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+`LUGUS` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
