@@ -348,10 +348,9 @@ class LugusApp(App):
     status = reactive("reading", recompose=True)
 
     BINDINGS = [
-        ("d", "toggle_dark", "Toggle dark mode"),
+        ("c", "open_configuration", "Configs"),
         ("question_mark", "article_data", "Article Raw Data"),
         ("r", "article_read", "Set Article as Read"),
-        ("c", "open_configuration", "Configs"),
         ("o", "read_online", "Read Online"),
     ]
 
@@ -470,10 +469,6 @@ class LugusApp(App):
 
     def on_tree_node_selected(self, event: Tree.NodeSelected):
         self.query_one("#articles").feed = event.node
-
-    def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
-        self.dark = not self.dark
 
     def action_article_data(self) -> None: 
         reader = self.query_one("#reader")
