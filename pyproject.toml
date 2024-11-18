@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.scripts]
-calculator = "lugus.entry_points:lugus"
+lugus = "lugus.entry_points:lugus"
 
 [project.urls]
 Documentation = "https://github.com/OpenCode/lugus#readme"
