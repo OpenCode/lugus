@@ -1,22 +1,20 @@
 # LUGUS: Your terminal feeds reader
 
-[![PyPI - Version](https://img.shields.io/pypi/v/lugus.svg)](https://pypi.org/project/lugus)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lugus.svg)](https://pypi.org/project/lugus)
+[![PyPI - Version](https://img.shields.io/pypi/v/lugus.svg?style=for-the-badge)](https://pypi.org/project/lugus)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lugus.svg?style=for-the-badge)](https://pypi.org/project/lugus)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/lugus?style=for-the-badge)
+
 
 ![readme header](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/header.png)
 
 -----
 
-## Table of Contents
-
-- [Installation](#installation)
-- [Roadmap](#roadmap)
-- [License](#license)
-
 ## Installation
 
+/!\ **Lugus currently runs only on GNU/Linux**
+
 ```console
-pip install lugus
+pipx install lugus
 ```
 
 ## Screenshot
@@ -25,8 +23,13 @@ pip install lugus
 
 ![main page screenshot](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/home.png)
 
+### New Feed Screen
+
+![new feed page screenshot](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/new_feed.png)
+
 ## Roadmap
 
+- [ ] Feeds management (edit, delete, ...)
 - [ ] Import existing OPML files
 - [ ] Export feeds as OPML file
 - [ ] Set article as unread
@@ -37,7 +40,9 @@ pip install lugus
 - [ ] Feeds auto-sync
 - [ ] Edit existing feeds
 - [ ] Search articles by name/content
+- [ ] Support for Windows
  
 ## License
 
 `LUGUS` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+
