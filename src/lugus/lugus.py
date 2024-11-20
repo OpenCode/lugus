@@ -12,6 +12,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import Header, Footer, ListItem, ListView, Rule, Select, Tree, Markdown, Static, Button, \
     Label, Input, Pretty, Switch
 from textual.reactive import reactive
+from rich.emoji import Emoji
 
 
 CONFIG_DIR = Path.joinpath(Path.home(), ".config/lugus")
@@ -245,15 +246,20 @@ class Feeds(Vertical):
                 },
             )
         yield tree
-        yield Button(
-            "Sync",
-            variant="primary",
-            id="sync",
-        )
-        yield Button(
-            "Add New Feed",
-            variant="primary",
-            id="add_new",
+        yield Horizontal(
+            Button(
+                Emoji.replace(":counterclockwise_arrows_button:"),
+                variant="primary",
+                id="sync",
+                tooltip="Get new articles from feeds",
+            ),
+            Button(
+                Emoji.replace(":heavy_plus_sign:"),
+                variant="primary",
+                id="add_new",
+                tooltip="Add a new feed",
+            ),
+            id="feed_buttons",
         )
 
 
@@ -423,7 +429,7 @@ class LugusApp(App):
                 )
         if update_interface_element:
             update_interface_element.disabled = False
-            update_interface_element.label = "Sync"
+            update_interface_element.label = Emoji.replace(":counterclockwise_arrows_button:")
             self.notify("Feeds synchronized!")
         return
 
