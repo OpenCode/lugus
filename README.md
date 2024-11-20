@@ -23,6 +23,24 @@ pipx install lugus
 
 ![main page screenshot](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/home.png)
 
+### Search
+
+#### Generic Search
+
+![generic search](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/search.png)
+
+#### Title Search
+
+![title search](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/search_title.png)
+
+#### Content Search
+
+![content search](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/search_content.png)
+
+#### Multiple Search
+
+![multi search](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/search_multi.png)
+
 ### New Feed Screen
 
 ![new feed page screenshot](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/new_feed.png)
@@ -33,13 +51,11 @@ pipx install lugus
 - [ ] Import existing OPML files
 - [ ] Export feeds as OPML file
 - [ ] Set article as unread
-- [ ] Set a feed as read
 - [ ] Set an article as favorite
 - [ ] Tags system for articles
 - [ ] Add notes on articles
 - [ ] Feeds auto-sync
 - [ ] Edit existing feeds
-- [ ] Search articles by name/content
 - [ ] Support for Windows
  
 ## License

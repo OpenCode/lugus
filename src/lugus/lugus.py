@@ -78,6 +78,20 @@ class ORM():
         )
         self.connection.commit()
 
+    def update_where(self, table, where, values):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            "UPDATE %s SET %s WHERE %s" % (
+                table,
+                ", ".join([
+                    f"{v[0]} = {self._convert_value(v[1])}"
+                    for v in values
+                    ]),
+                where,
+            )
+        )
+        self.connection.commit()
+
     def read(self, table, id_record):
         if isinstance(id_record, str):
             id_record = int(id_record.lower().replace("id-", ""))
@@ -269,18 +283,41 @@ class Articles(Vertical):
     recomposes = reactive(0, recompose=True)
     feed = reactive(False, recompose=True)
     filter_articles_type = reactive("", recompose=True)
+    filter_articles = reactive("", recompose=True)
 
     def compose(self) -> ComposeResult:
         articles = []
         if self.feed and self.feed.data:
             data = self.feed.data
+            # Filter by Read/Unread
             if self.filter_articles_type == "unread":
                 read = " AND read = 0"
             elif self.filter_articles_type == "read":
                 read = " AND read = 1"
             else:
                 read = ""
-            articles = self.orm.search("article", ["id", "date", "title"], where=f"feed_id = {data["id"]}{read}")
+            # Filter by Title/Content
+            if self.filter_articles:
+                filters = self.filter_articles.split(",")
+                filter_text = ""
+                for filter in filters:
+                    filter = filter.strip().replace("\"", "")
+                    if filter:
+                        if filter.lower().startswith("title:"):
+                            filter = filter.replace("title:", "")
+                            filter_text = f"{filter_text} AND title LIKE \"%{filter}%\""
+                        elif filter.lower().startswith("content:"):
+                            filter = filter.replace("content:", "")
+                            filter_text = f"{filter_text} AND content LIKE \"%{filter}%\""
+                        else:
+                            filter_text = f"{filter_text} AND (title LIKE \"%{filter}%\" OR content LIKE \"%{filter}%\")"
+            else:
+                filter_text = ""
+            articles = self.orm.search(
+                "article",
+                ["id", "date", "title"],
+                where=f"feed_id = {data["id"]}{read}{filter_text}",
+            )
         yield ListView(
             *[
                 ListItem(
@@ -298,15 +335,24 @@ class Articles(Vertical):
 
 class ArticlesArea(Vertical):
 
+    orm = ORM()
+
     def compose(self) -> ComposeResult:
-        yield Select(
-            (
-                ("Unread", "unread"),
-                ("Read", "read"),
-                ("All", "all"),
+        yield Horizontal(
+            Select(
+                (
+                    ("Unread", "unread"),
+                    ("Read", "read"),
+                    ("All", "all"),
+                ),
+                value="unread",
+                id="filter_articles_type",
             ),
-            value="unread",
-            id="filter_articles_type",
+            Input(
+                placeholder="Search " + Emoji.replace(":magnifying_glass_tilted_left:"),
+                id="search_articles",
+            ),
+            classes="w100 hauto mb1",
         )
         yield Articles(
             id="articles"
@@ -316,6 +362,11 @@ class ArticlesArea(Vertical):
     def select_changed(self, event: Select.Changed) -> None:
         if event.select.id == "filter_articles_type":
             self.query_one("#articles").filter_articles_type = event.value
+
+    @on(Input.Changed)
+    def filter_articles(self, event: Input.Changed) -> None:
+        if event.input.id == "search_articles":
+            self.query_one("#articles").filter_articles = event.value
 
 
 class Reader(Vertical):
@@ -357,6 +408,7 @@ class LugusApp(App):
         ("c", "open_configuration", "Configs"),
         ("question_mark", "article_data", "Article Raw Data"),
         ("r", "article_read", "Set Article as Read"),
+        ("a", "all_articles_read", "Set all Feed Articles as Read"),
         ("o", "read_online", "Read Online"),
     ]
 
@@ -491,6 +543,19 @@ class LugusApp(App):
 
     def action_open_configuration(self) -> None:
         self.status = "configuration"
+
+    def action_all_articles_read(self) -> None:
+        feed = self.query_one("#articles").feed
+        if not feed:
+            self.notify("Select a feed", severity="warning")
+        else:
+            self.orm.update_where(
+                "article",
+                f"feed_id = {feed.data["id"]} AND read = 0",
+                [("read", 1)],
+            )
+            self.query_one("#sidebar").recomposes += 1
+            self.query_one("#articles").recomposes += 1
 
     def action_read_online(self) -> None:
         reader = self.query_one("#reader")
