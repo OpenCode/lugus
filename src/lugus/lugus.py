@@ -9,8 +9,8 @@ from textual import on, work
 import textual
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Header, Footer, ListItem, ListView, Rule, Select, Tree, Markdown, Static, Button, \
-    Label, Input, Pretty, Switch
+from textual.widgets import Header, Footer, ListItem, ListView, Select, Tree, Markdown, Static, Button, Label, \
+    Input, Pretty, Switch
 from textual.reactive import reactive
 from rich.emoji import Emoji
 
@@ -175,7 +175,6 @@ class ConfigurationForm(Vertical):
     config = Config()
 
     def compose(self) -> ComposeResult:
-        yield Static("[b]Feeds\n", classes="config_area_label")
         yield Horizontal(
             Static(
                 "Show Unread Counter",
@@ -189,9 +188,8 @@ class ConfigurationForm(Vertical):
                 value=self.config.get("feed_show_unread_counter")
             ),
             classes="config_area_container",
+            id="config_area_feeds",
         )
-        yield Rule()
-        yield Static("[b]Articles\n", classes="config_area_label")
         yield Horizontal(
             Static(
                 "Read Automatically when Opening",
@@ -206,9 +204,8 @@ class ConfigurationForm(Vertical):
                 value=self.config.get("article_read_auto_opening")
             ),
             classes="config_area_container",
+            id="config_area_articles",
         )
-        yield Rule()
-        yield Static("[b]User Interface\n", classes="config_area_label")
         yield Horizontal(
             Static(
                 "Theme",
@@ -219,10 +216,20 @@ class ConfigurationForm(Vertical):
                 id="config_ui_theme",
                 value=self.config.get("ui_theme", default="textual-ansi"),
                 classes="config_select"
-            )
+            ),
+            classes="config_area_container",
+            id="config_area_ui",
         )
         yield Button("+ Save", variant="primary", id="save_config_button")
         yield Button("< Back", id="back_feed_button")
+
+    def on_mount(self) -> None:
+        config_area_feeds = self.query_one("#config_area_feeds")
+        config_area_feeds.border_title = "FEEDS"
+        config_area_articles = self.query_one("#config_area_articles")
+        config_area_articles.border_title = "ARTICLES"
+        config_area_ui = self.query_one("#config_area_ui")
+        config_area_ui.border_title = "USER INTERFACE"
 
 
 class Feeds(Vertical):
