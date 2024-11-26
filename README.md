@@ -62,7 +62,14 @@ pipx install lugus
 - [ ] Feeds auto-sync
 - [ ] Edit existing feeds
 - [ ] Support for Windows
- 
+
+## Support
+
+<a href="https://www.buymeacoffee.com/scapigliato" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/lato-violet.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+
+![Liberapay patrons](https://img.shields.io/liberapay/patrons/Scapigliato?style=for-the-badge&logo=liberapay)
+
+
 ## License
 
 `LUGUS` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
