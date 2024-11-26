@@ -28,15 +28,13 @@ Screen {
     padding: 4 8;
 }
 
-.config_area_label {
-  height: 4;
-  content-align: left middle;
-  width: 100%;
-}
-
 .config_area_container {
   width: 100%;
   height: auto;
+  border: solid $panel;
+  border-title-style: bold;
+  padding: 2;
+  margin-bottom: 1;
 }
 
 .config_label {
