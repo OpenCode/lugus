@@ -45,6 +45,11 @@ pipx install lugus
 
 ![new feed page screenshot](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/new_feed.png)
 
+#### Configuration Screen
+
+![configuration page](https://raw.githubusercontent.com/OpenCode/lugus/main/readme/config.png)
+
+
 ## Roadmap
 
 - [ ] Feeds management (edit, delete, ...)
